@@ -1,5 +1,7 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
+import path = require("path");
+
 export default $config({
   app(input) {
     return {
@@ -12,6 +14,15 @@ export default $config({
   async run() {
     const storage = await import("./infra/storage");
     await import("./infra/api");
+
+    const bucket = new sst.aws.Bucket("MyBucketNext", {
+      access: "public",
+    });
+
+    new sst.aws.Nextjs("MyWeb2", {
+      path: "apps/next-test",
+      link: [bucket],
+    });
 
     return {
       MyBucket: storage.bucket.name,
